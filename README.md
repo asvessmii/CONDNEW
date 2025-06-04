@@ -27,10 +27,21 @@ node src/index.js
 ```json
 {
   "version": 2,
-  "builds": [{ "src": "api/telegramHook.js", "use": "@vercel/node" }],
+  "builds": [
+    {
+      "src": "api/telegramHook.js",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": ["node_modules/sqlite3/**"]
+      }
+    }
+  ],
   "routes": [{ "src": "/api/telegramHook", "dest": "api/telegramHook.js" }]
 }
 ```
+
+Опция `includeFiles` гарантирует, что нативный модуль `sqlite3` попадёт в сборку
+serverless‑функции и будет доступен на Vercel.
 
 Это гарантирует, что запросы к `/api/telegramHook` будут направлены в функцию бота.
 Не забудьте указать значение `WEBHOOK_URL` в `.env` вида
@@ -39,3 +50,4 @@ node src/index.js
 оставаться `.` (корень репозитория), иначе `vercel.json` и функция не будут найдены.
 Так как файловая система Vercel доступна только для чтения, укажите переменную
 `DB_URL` вида `sqlite:///tmp/database.sqlite` или используйте внешнюю базу данных.
+
