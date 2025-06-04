@@ -9,13 +9,9 @@ if (fs.existsSync('.env')) {
 if (fs.existsSync('.env.local')) {
   dotenv.config({ path: '.env.local', override: true });
 }
-const defaultDbUrl = process.env.VERCEL
-  ? 'sqlite:///tmp/database.sqlite'
-  : 'sqlite://./database.sqlite';
-
 module.exports = {
   botToken: process.env.BOT_TOKEN,
   adminId: process.env.ADMIN_USER_ID,
-  dbUrl: process.env.DB_URL || defaultDbUrl,
+  dbUrl: process.env.DATABASE_URL || process.env.DB_URL,
   webhookUrl: process.env.WEBHOOK_URL
 };
