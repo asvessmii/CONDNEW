@@ -16,7 +16,7 @@ npm run seed # загрузить тестовые данные
 node src/index.js
 ```
 
-Бот использует SQLite для хранения данных. Для деплоя на Vercel файл `api/telegramHook.js`
+Бот использует PostgreSQL для хранения данных. Для деплоя на Vercel файл `api/telegramHook.js`
 экспортируется как serverless функция.
 
 ## Деплой на Vercel
@@ -30,24 +30,17 @@ node src/index.js
   "builds": [
     {
       "src": "api/telegramHook.js",
-      "use": "@vercel/node",
-      "config": {
-        "includeFiles": ["node_modules/sqlite3/**"]
-      }
+      "use": "@vercel/node"
     }
   ],
   "routes": [{ "src": "/api/telegramHook", "dest": "api/telegramHook.js" }]
 }
 ```
 
-Опция `includeFiles` гарантирует, что нативный модуль `sqlite3` попадёт в сборку
-serverless‑функции и будет доступен на Vercel.
-
 Это гарантирует, что запросы к `/api/telegramHook` будут направлены в функцию бота.
 Не забудьте указать значение `WEBHOOK_URL` в `.env` вида
 `https://<your-app>.vercel.app/api/telegramHook` и установить вебхук ботом.
 Важно: в настройках проекта на Vercel параметр **Root Directory** должен
 оставаться `.` (корень репозитория), иначе `vercel.json` и функция не будут найдены.
-Так как файловая система Vercel доступна только для чтения, укажите переменную
-`DB_URL` вида `sqlite:///tmp/database.sqlite` или используйте внешнюю базу данных.
+Используйте переменную окружения `DATABASE_URL` со строкой подключения к PostgreSQL.
 

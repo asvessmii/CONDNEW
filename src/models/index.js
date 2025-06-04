@@ -1,8 +1,10 @@
 const { Sequelize, DataTypes } = require('sequelize');
-const config = require('../config/config');
 
-const sequelize = new Sequelize(config.dbUrl, {
-  logging: false
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
+  dialect: 'postgres',
+  protocol: 'postgres',
+  logging: false,
+  ssl: { rejectUnauthorized: false }
 });
 
 const Product = sequelize.define('Product', {
