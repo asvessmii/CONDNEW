@@ -6,7 +6,7 @@
 
 ```bash
 npm install
-cp .env.local
+cp .env.local .env
 npm run seed # загрузить тестовые данные
 ```
 
