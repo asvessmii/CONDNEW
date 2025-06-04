@@ -19,4 +19,22 @@ async function showCatalog(ctx) {
   }
 }
 
-module.exports = { showCatalog };
+async function showProduct(ctx, id) {
+  const p = await Product.findByPk(id);
+  if (!p) {
+    return ctx.answerCbQuery('Товар не найден');
+  }
+  await ctx.replyWithPhoto(p.photoFull || null, {
+    caption:
+      `*${p.name}*\n${p.fullDescription}\n\nЦена: *${p.price} ₽*`,
+    parse_mode: 'Markdown',
+    reply_markup: {
+      inline_keyboard: [[
+        { text: 'В корзину', callback_data: `ADD_${p.id}` },
+        { text: 'Назад', callback_data: 'BACK_TO_CATALOG' }
+      ]]
+    }
+  });
+}
+
+module.exports = { showCatalog, showProduct };

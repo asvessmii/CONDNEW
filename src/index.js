@@ -34,7 +34,28 @@ bot.on('callback_query', async (ctx) => {
   if (data.startsWith('ADD_')) {
     const id = parseInt(data.slice(4));
     await cart.addToCart(ctx, id);
+  } else if (data.startsWith('VIEW_')) {
+    const id = parseInt(data.slice(5));
+    await catalog.showProduct(ctx, id);
+  } else if (data === 'BACK_TO_CATALOG') {
+    await catalog.showCatalog(ctx);
+  } else if (data.startsWith('DEL_')) {
+    const id = parseInt(data.slice(4));
+    await cart.removeFromCart(ctx, id);
+  } else if (data === 'CART_CLEAR') {
+    await cart.clearCart(ctx);
+  } else if (data === 'ORDER_CONFIRM') {
+    await cart.confirmOrder(ctx);
+  } else if (data === 'ORDER_FINALIZE') {
+    await cart.finalizeOrder(ctx);
+  } else if (data === 'ORDER_CANCEL') {
+    await cart.cancelOrder(ctx);
+  } else if (data.startsWith('NEXT_PROJECT_')) {
+    const order = parseInt(data.slice(13));
+    await about.nextProject(ctx, order);
   }
 });
+
+bot.on('text', feedback.handleResponse);
 
 module.exports = bot;
