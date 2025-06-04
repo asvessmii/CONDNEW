@@ -1,7 +1,13 @@
 {
   "version": 2,
   "builds": [
-    { "src": "api/telegramHook.js", "use": "@vercel/node" }
+    {
+      "src": "api/telegramHook.js",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": ["node_modules/sqlite3/**"]
+      }
+    }
   ],
   "routes": [
     { "src": "/api/telegramHook", "dest": "api/telegramHook.js" }
