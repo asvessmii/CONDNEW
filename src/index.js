@@ -59,3 +59,9 @@ bot.on('callback_query', async (ctx) => {
 bot.on('text', feedback.handleResponse);
 
 module.exports = bot;
+
+if (require.main === module) {
+  bot.launch().then(() => {
+    console.log('Bot started in polling mode');
+  });
+}
