@@ -1,0 +1,20 @@
+{
+  "name": "condnew",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "echo \"No tests\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "dotenv": "^16.5.0",
+    "sequelize": "^6.37.7",
+    "sqlite3": "^5.1.7",
+    "telegraf": "^4.16.3"
+  }
+}
