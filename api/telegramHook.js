@@ -1,4 +1,4 @@
-const bot = require('../index');
+const bot = require('../src/index');
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
     await bot.handleUpdate(req.body, res);

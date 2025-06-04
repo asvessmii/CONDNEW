@@ -15,7 +15,7 @@ cp .env.example .env # заполните значения
 node src/index.js
 ```
 
-Бот использует SQLite для хранения данных. Для деплоя на Vercel файл `src/api/telegramHook.js`
+Бот использует SQLite для хранения данных. Для деплоя на Vercel файл `api/telegramHook.js`
 экспортируется как serverless функция.
 
 ## Деплой на Vercel
@@ -26,8 +26,8 @@ node src/index.js
 ```json
 {
   "version": 2,
-  "builds": [{ "src": "src/api/telegramHook.js", "use": "@vercel/node" }],
-  "routes": [{ "src": "/api/telegramHook", "dest": "src/api/telegramHook.js" }]
+  "builds": [{ "src": "api/telegramHook.js", "use": "@vercel/node" }],
+  "routes": [{ "src": "/api/telegramHook", "dest": "api/telegramHook.js" }]
 }
 ```
 
