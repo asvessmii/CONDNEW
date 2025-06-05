@@ -1,6 +1,5 @@
 const { Telegraf } = require('telegraf');
 const config = require('./config/config');
-const { sequelize } = require('./models');
 const catalog = require('./controllers/catalogController');
 const cart = require('./controllers/cartController');
 const feedback = require('./controllers/feedbackController');
@@ -9,7 +8,6 @@ const about = require('./controllers/aboutController');
 const bot = new Telegraf(config.botToken);
 
 bot.start(async (ctx) => {
-  await sequelize.sync();
   await ctx.reply('Добро пожаловать в бот «Кондиционеры Питер»!', {
     reply_markup: {
       keyboard: [

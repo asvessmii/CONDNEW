@@ -1,11 +1,11 @@
-const { Product } = require('../models');
+const { products } = require('../models');
 
 async function showCatalog(ctx) {
-  const products = await Product.findAll();
-  if (!products.length) {
+  const all = products;
+  if (!all.length) {
     return ctx.reply('Каталог пуст.');
   }
-  for (const p of products) {
+  for (const p of all) {
     await ctx.replyWithPhoto(p.photoThumb || null, {
       caption: `*${p.name}*\n${p.shortDescription}\nЦена: *${p.price} ₽*`,
       parse_mode: 'Markdown',
@@ -20,13 +20,12 @@ async function showCatalog(ctx) {
 }
 
 async function showProduct(ctx, id) {
-  const p = await Product.findByPk(id);
+  const p = products.find((prod) => prod.id === id);
   if (!p) {
     return ctx.answerCbQuery('Товар не найден');
   }
   await ctx.replyWithPhoto(p.photoFull || null, {
-    caption:
-      `*${p.name}*\n${p.fullDescription}\n\nЦена: *${p.price} ₽*`,
+    caption: `*${p.name}*\n${p.fullDescription}\n\nЦена: *${p.price} ₽*`,
     parse_mode: 'Markdown',
     reply_markup: {
       inline_keyboard: [[

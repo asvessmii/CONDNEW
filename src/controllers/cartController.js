@@ -1,57 +1,68 @@
-const { CartItem, Product } = require('../models');
+const { carts, products } = require('../models');
+
+function getCart(userId) {
+  if (!carts.has(userId)) {
+    carts.set(userId, []);
+  }
+  return carts.get(userId);
+}
 
 async function addToCart(ctx, productId) {
-  const product = await Product.findByPk(productId);
+  const product = products.find((p) => p.id === productId);
   if (!product) {
     return ctx.answerCbQuery('Товар недоступен');
   }
-  const [item] = await CartItem.findOrCreate({
-    where: { userId: ctx.chat.id, productId },
-    defaults: { quantity: 1, priceAtAdd: product.price }
-  });
-  if (!item.isNewRecord) {
+  const cart = getCart(ctx.chat.id);
+  let item = cart.find((i) => i.productId === productId);
+  if (item) {
     item.quantity += 1;
-    await item.save();
+  } else {
+    item = { productId, quantity: 1, priceAtAdd: product.price };
+    cart.push(item);
   }
   await ctx.answerCbQuery(`Добавлено в корзину: ${product.name}`);
 }
 
 async function showCart(ctx) {
-  const items = await CartItem.findAll({ where: { userId: ctx.chat.id }, include: Product });
-  if (!items.length) {
+  const cart = getCart(ctx.chat.id);
+  if (!cart.length) {
     return ctx.reply('Ваша корзина пуста');
   }
   let total = 0;
   let text = '*Ваша корзина:*\n';
-  for (const it of items) {
+  for (const it of cart) {
+    const product = products.find((p) => p.id === it.productId);
     const cost = it.quantity * it.priceAtAdd;
     total += cost;
-    text += `\n${it.Product.name} x ${it.quantity} = ${cost} ₽`;
+    text += `\n${product.name} x ${it.quantity} = ${cost} ₽`;
   }
   text += `\n\nИтого: ${total} ₽`;
   await ctx.reply(text, { parse_mode: 'Markdown' });
 }
 
 async function removeFromCart(ctx, productId) {
-  await CartItem.destroy({ where: { userId: ctx.chat.id, productId } });
+  const cart = getCart(ctx.chat.id);
+  const index = cart.findIndex((i) => i.productId === productId);
+  if (index !== -1) cart.splice(index, 1);
   await ctx.answerCbQuery('Удалено');
   return showCart(ctx);
 }
 
 async function clearCart(ctx) {
-  await CartItem.destroy({ where: { userId: ctx.chat.id } });
+  carts.set(ctx.chat.id, []);
   await ctx.reply('Корзина очищена');
 }
 
 async function confirmOrder(ctx) {
-  const items = await CartItem.findAll({ where: { userId: ctx.chat.id }, include: Product });
-  if (!items.length) return ctx.answerCbQuery('Корзина пуста');
+  const cart = getCart(ctx.chat.id);
+  if (!cart.length) return ctx.answerCbQuery('Корзина пуста');
   let total = 0;
   let text = '*Ваш заказ:*\n';
-  for (const it of items) {
+  for (const it of cart) {
+    const product = products.find((p) => p.id === it.productId);
     const cost = it.quantity * it.priceAtAdd;
     total += cost;
-    text += `\n${it.Product.name} x ${it.quantity} = ${cost} ₽`;
+    text += `\n${product.name} x ${it.quantity} = ${cost} ₽`;
   }
   text += `\n\nИтого: ${total} ₽`;
   await ctx.reply(text, {
