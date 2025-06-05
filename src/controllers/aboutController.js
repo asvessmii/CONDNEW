@@ -1,7 +1,7 @@
-const { Project } = require('../models');
+const { projects } = require('../models');
 
 async function showFirstProject(ctx) {
-  const project = await Project.findOne({ order: [['sortOrder', 'ASC']] });
+  const project = projects.sort((a, b) => a.sortOrder - b.sortOrder)[0];
   if (!project) return ctx.reply('Нет проектов');
   return showProject(ctx, project);
 }
@@ -17,7 +17,7 @@ async function showProject(ctx, project) {
 }
 
 async function nextProject(ctx, currentOrder) {
-  const project = await Project.findOne({ where: { sortOrder: currentOrder + 1 } });
+  const project = projects.find((p) => p.sortOrder === currentOrder + 1);
   if (!project) return ctx.answerCbQuery('Конец списка');
   await showProject(ctx, project);
 }
