@@ -6,6 +6,6 @@ module.exports = async (req, res) => {
     res.end('OK');
   } else {
     res.statusCode = 200;
-    res.end('Hello');
+    res.end('Bot is running');
   }
 };
