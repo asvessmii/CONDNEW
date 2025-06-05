@@ -1,4 +1,5 @@
-const { Feedback } = require('../models');
+const { feedbacks } = require('../models');
+const config = require('../config/config');
 const states = new Map();
 
 async function startFeedback(ctx) {
@@ -15,9 +16,15 @@ async function handleResponse(ctx) {
     await ctx.reply('Введите телефон:');
   } else if (st.step === 'phone') {
     st.phone = ctx.message.text.trim();
-    await Feedback.create({ userId: ctx.chat.id, name: st.name, phone: st.phone });
+    feedbacks.push({ userId: ctx.chat.id, name: st.name, phone: st.phone });
     states.delete(ctx.chat.id);
     await ctx.reply('Спасибо, ваша заявка принята.');
+    if (config.adminId) {
+      await ctx.telegram.sendMessage(
+        config.adminId,
+        `Новая заявка от ${st.name}\nТелефон: ${st.phone}`
+      );
+    }
   }
 }
 

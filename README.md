@@ -7,7 +7,6 @@
 ```bash
 npm install
 cp .env.local .env
-npm run seed # загрузить тестовые данные
 ```
 
 ## Запуск локально
@@ -16,7 +15,7 @@ npm run seed # загрузить тестовые данные
 node src/index.js
 ```
 
-Бот использует PostgreSQL для хранения данных. Для деплоя на Vercel файл `api/telegramHook.js`
+Бот хранит данные в памяти в виде статических массивов. Для деплоя на Vercel файл `api/telegramHook.js`
 экспортируется как serverless функция.
 
 ## Деплой на Vercel
@@ -39,8 +38,14 @@ node src/index.js
 
 Это гарантирует, что запросы к `/api/telegramHook` будут направлены в функцию бота.
 Не забудьте указать значение `WEBHOOK_URL` в `.env` вида
-`https://<your-app>.vercel.app/api/telegramHook` и установить вебхук ботом.
+`https://<your-app>.vercel.app/api/telegramHook`.
+После деплоя выполните команду
+
+```bash
+npm run setWebhook
+```
+
+чтобы зарегистрировать вебхук для вашего бота. При обращении к этому URL в браузере будет показано короткое сообщение "Bot is running"; общение с ботом происходит в Telegram.
 Важно: в настройках проекта на Vercel параметр **Root Directory** должен
 оставаться `.` (корень репозитория), иначе `vercel.json` и функция не будут найдены.
-Используйте переменную окружения `DATABASE_URL` со строкой подключения к PostgreSQL.
 
